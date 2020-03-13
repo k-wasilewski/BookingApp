@@ -2,6 +2,7 @@ package pl.touk.bookingapp.db.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.sql.Date;
 
 @Entity
 @Table(name="movies")
@@ -11,5 +12,6 @@ public class Movie {
     private Integer id;
     @NotBlank
     private String name;
+    private Date date;
 
 }

@@ -1,22 +1,45 @@
 package pl.touk.bookingapp.controllers;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import pl.touk.bookingapp.db.entities.Movie;
 import pl.touk.bookingapp.db.repos.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import javax.servlet.http.HttpServletRequest;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class HomeController {
     @Autowired
     MovieRepository movieRepository;
 
-    @RequestMapping("/")
-    public String homeView(Model model) {
-        model.addAttribute("movies", movieRepository.findAllByIdNotNull());
+    @GetMapping("/")
+    public String homeMoviesView() {
+        return "index";
+    }
+
+    @PostMapping("/")
+    public String filterMovies(Model model, HttpServletRequest request) {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern( "uuuu-MM-dd" ) ;
+        Date from=null;
+        Date to=null;
+
+        if (request.getParameter("from")!=null && !request.getParameter("from").equals("")) {
+            from=Date.valueOf(request.getParameter("from"));
+            System.out.println(from);
+            model.addAttribute("from", from);
+        }
+        if (request.getParameter("to")!=null && !request.getParameter("to").equals("")) {
+            to=Date.valueOf(request.getParameter("to"));
+            System.out.println(to);
+            model.addAttribute("to", to);
+        }
+        model.addAttribute("movies", movieRepository.customFindWithinDates(from, to));
         return "index";
     }
 
