@@ -36,8 +36,14 @@
     <c:if test="${not empty from and not empty to}">
         <h3>Wyniki dla okresu ${from} - ${to}</h3>
     </c:if>
+    <c:if test="${empty from or empty to}">
+        <span style="color: red">Należy podać przedział dat</span>
+    </c:if>
     <c:if test="${not empty fromH and not empty toH}">
         <h3>w godzinach ${fromH} - ${toH}</h3>
+    </c:if>
+    <c:if test="${empty fromH or empty toH}">
+        <span style="color: red">Należy podać przedział godzin</span>
     </c:if>
     <c:forEach items="${movies}" var="movie">
         ${movie}

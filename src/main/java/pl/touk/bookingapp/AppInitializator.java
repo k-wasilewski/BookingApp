@@ -51,6 +51,12 @@ class AppInitializator {
         Movie starTrek = new Movie("StarTrek", Date.valueOf("2020-03-12"), Time.valueOf("12:00:00"),
                 s1);
         movieDao.saveMovie(starTrek);
+        Movie najlepszy2 = new Movie("Najlepszy", Date.valueOf("2021-03-13"), Time.valueOf("12:00:00"),
+                s2);
+        movieDao.saveMovie(najlepszy2);
+        Movie najlepszy3 = new Movie("Najlepszy", Date.valueOf("2021-03-13"), Time.valueOf("14:00:00"),
+                s1);
+        movieDao.saveMovie(najlepszy3);
     }
 }
 

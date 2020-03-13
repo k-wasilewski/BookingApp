@@ -14,7 +14,7 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
     Movie findById(int id);
     List<Movie> findAllByIdNotNull();
     @Query("SELECT m FROM Movie m WHERE m.date > :fromm AND m.date < :too AND " +
-            "m.time > :frommH AND m.time < :tooH")
+            "m.time > :frommH AND m.time < :tooH ORDER BY m.name DESC, m.date DESC, m.time DESC")
     List<Movie> customFindWithinDatesAndTimes(@Param("fromm") Date from, @Param("too") Date to,
                                               @Param("frommH")Time fromH, @Param("tooH") Time toH);
 }
