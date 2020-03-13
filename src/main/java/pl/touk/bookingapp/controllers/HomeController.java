@@ -52,6 +52,13 @@ public class HomeController {
         return "index";
     }
 
+    @GetMapping("/details")
+    public String movieDetails(@RequestParam("id") int id, Model model) {
+        Movie movie = movieRepository.findById(id);
+        model.addAttribute("movie", movie);
+        return "movieDetails";
+    }
+
     @GetMapping("/get")
     public String delDonation(Model model, @RequestParam("id") int id) {
         Movie movie = movieRepository.findById(id);

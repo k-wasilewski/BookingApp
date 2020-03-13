@@ -35,6 +35,7 @@
     </c:if>
     <c:forEach items="${movies}" var="movie">
         ${movie}
+        <a href="/details?id=${movie.id}"><button>Szczegóły</button></a>
         <br>
     </c:forEach>
 </body>
