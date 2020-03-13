@@ -36,10 +36,10 @@ class AppInitializator {
         s2.setSeats(bSeats);
         roomDao.updateRoom(s2);
 
-        Movie panSamochodzik = new Movie("Pan samochodzik", Date.valueOf("2019-06-15"), Time.valueOf("12:00:00"),
+        Movie panSamochodzik = new Movie("Pan samochodzik", Date.valueOf("2019-03-15"), Time.valueOf("12:00:00"),
                 s1);
         movieDao.saveMovie(panSamochodzik);
-        Movie imperiumKontratakuje = new Movie("Imperium kontratakuje", Date.valueOf("2019-12-15"), Time.valueOf("22:00:00"),
+        Movie imperiumKontratakuje = new Movie("Imperium kontratakuje", Date.valueOf("2021-12-15"), Time.valueOf("22:00:00"),
                 s1);
         movieDao.saveMovie(imperiumKontratakuje);
         Movie ogniemIMieczem = new Movie("Ogniem i mieczem", Date.valueOf("2019-12-15"), Time.valueOf("08:00:00"),

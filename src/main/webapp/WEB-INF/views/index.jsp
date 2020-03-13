@@ -6,8 +6,11 @@
     <title>Title</title>
 </head>
 <body>
-    <c:if test="${not empty ok}">
+    <c:if test="${ok==true}">
         <span style="color: green">Rezerwacja udana!</span>
+    </c:if>
+    <c:if test="${ok==false}">
+        <span style="color: red">Rezerwacja nieudana...</span>
     </c:if>
     <form action="/" method="post">
         <div class="col-md-3">

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 @Controller
 public class HomeController {
@@ -78,12 +79,24 @@ public class HomeController {
     public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seatId") int seatId,
                          @RequestParam("name") String name, @RequestParam("surname") String surname) {
         Movie movie = movieRepository.findById(movieId);
-        Seat seat = movie.getSeatById(seatId);
-        seat.setAvailable(false);
-        seat.setName(name);
-        seat.setSurname(surname);
-        seatDao.updateSeat(seat);
-        model.addAttribute("ok", true);
+        Date date = movie.getDate();
+        Time time = movie.getTime();
+        Date dateNow = new Date(Calendar.getInstance().getTime().getTime());
+        Time timeNow = new Time(Calendar.getInstance().getTime().getTime());
+        long fifteenMinsInMillis = 60000*15;
+
+        if (dateNow.getTime()<date.getTime() || (date.getTime()==dateNow.getTime() && timeNow.getTime() < time.getTime() &&
+                time.getTime()-timeNow.getTime()>fifteenMinsInMillis)) {
+            Seat seat = movie.getSeatById(seatId);
+            seat.setAvailable(false);
+            seat.setName(name);
+            seat.setSurname(surname);
+            seatDao.updateSeat(seat);
+            model.addAttribute("ok", true);
+        } else {
+            model.addAttribute("ok", false);
+        }
+
         return "index";
     }
 }
