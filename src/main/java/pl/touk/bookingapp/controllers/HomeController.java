@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -28,16 +29,24 @@ public class HomeController {
         DateTimeFormatter f = DateTimeFormatter.ofPattern( "uuuu-MM-dd" ) ;
         Date from=null;
         Date to=null;
+        Time fromH=null;
+        Time toH=null;
 
         if (request.getParameter("from")!=null && !request.getParameter("from").equals("")) {
             from=Date.valueOf(request.getParameter("from"));
-            System.out.println(from);
             model.addAttribute("from", from);
         }
         if (request.getParameter("to")!=null && !request.getParameter("to").equals("")) {
             to=Date.valueOf(request.getParameter("to"));
-            System.out.println(to);
             model.addAttribute("to", to);
+        }
+        if (request.getParameter("fromH")!=null && !request.getParameter("fromH").equals("")) {
+            fromH=Time.valueOf(request.getParameter("fromH")+":00");
+            model.addAttribute("fromH", fromH);
+        }
+        if (request.getParameter("toH")!=null && !request.getParameter("toH").equals("")) {
+            toH=Time.valueOf(request.getParameter("toH")+":00");
+            model.addAttribute("toH", toH);
         }
         model.addAttribute("movies", movieRepository.customFindWithinDates(from, to));
         return "index";
