@@ -35,6 +35,7 @@
     </c:if>
     <c:forEach items="${movies}" var="movie">
         ${movie}
+        <br>
     </c:forEach>
 </body>
 </html>

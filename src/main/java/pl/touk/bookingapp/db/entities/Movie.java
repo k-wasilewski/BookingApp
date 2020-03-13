@@ -18,6 +18,6 @@ public class Movie {
 
     @Override
     public String toString() {
-        return this.id+": '"+this.name+"', "+this.date;
+        return this.id+": '"+this.name+"', ("+this.date+", "+this.time+")";
     }
 }

@@ -48,7 +48,7 @@ public class HomeController {
             toH=Time.valueOf(request.getParameter("toH")+":00");
             model.addAttribute("toH", toH);
         }
-        model.addAttribute("movies", movieRepository.customFindWithinDates(from, to));
+        model.addAttribute("movies", movieRepository.customFindWithinDatesAndTimes(from, to, fromH, toH));
         return "index";
     }
 
