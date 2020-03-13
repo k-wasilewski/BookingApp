@@ -1,23 +1,27 @@
 package pl.touk.bookingapp.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.touk.bookingapp.db.dao.SeatDao;
 import pl.touk.bookingapp.db.entities.Movie;
+import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Controller
 public class HomeController {
     @Autowired
     MovieRepository movieRepository;
+    @Autowired
+    SeatDao seatDao;
 
     @GetMapping("/")
     public String homeMoviesView() {
@@ -61,9 +65,25 @@ public class HomeController {
         return "movieDetails";
     }
 
-    @GetMapping("/get")
-    public String delDonation(Model model, @RequestParam("id") int id) {
-        Movie movie = movieRepository.findById(id);
-        return "";
+    @GetMapping("/book")
+    public String bookingView(Model model, @RequestParam("movieId") int movieId, @RequestParam("seatId") int seatId) {
+        Movie movie = movieRepository.findById(movieId);
+        model.addAttribute("movie", movie);
+        Seat seat = movie.getSeatById(seatId);
+        model.addAttribute("seat", seat);
+        return "booking";
+    }
+
+    @PostMapping("/doBook")
+    public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seatId") int seatId,
+                         @RequestParam("name") String name, @RequestParam("surname") String surname) {
+        Movie movie = movieRepository.findById(movieId);
+        Seat seat = movie.getSeatById(seatId);
+        seat.setAvailable(false);
+        seat.setName(name);
+        seat.setSurname(surname);
+        seatDao.updateSeat(seat);
+        model.addAttribute("ok", true);
+        return "index";
     }
 }

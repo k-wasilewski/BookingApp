@@ -27,6 +27,8 @@ public class Movie {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Seat> seats;
 
+    public Movie() {}
+
     public Movie(String name, Date date, Time time, Room room) {
         this.name=name;
         this.date=date;
@@ -41,6 +43,15 @@ public class Movie {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public Seat getSeatById(int id) {
+        for(Seat s: this.seats) {
+            if (s.getId()==id) {
+                return s;
+            }
+        }
+        return null;
     }
 
     public List<Seat> getSeats() {

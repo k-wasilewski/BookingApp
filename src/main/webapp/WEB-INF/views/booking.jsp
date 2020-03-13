@@ -6,13 +6,13 @@
     <title>Title</title>
 </head>
 <body>
-    <h2>${movie}</h2>
-    sala: ${movie.room}, wolne miejsca:<br>
-    <c:forEach items="${availableSeats}" var="seat">
-        ${seat}
-        <a href="/book?movieId=${movie.id}&seatId=${seat.id}"><button>Rezerwuj</button></a>
-        <br>
-    </c:forEach>
+    <form action="/doBook" method="post">
+        <input hidden value="${seat.id}" name="seatId">
+        <input hidden value="${movie.id}" name="movieId">
+        Imię: <input type="text" name="name">
+        Nazwisko: <input type="text" name="surname">
+        <button type="submit">Rezerwuj</button>
+    </form>
     <form>
         <input type="button" value="Powrót" onclick="history.back()">
     </form>

@@ -6,6 +6,9 @@
     <title>Title</title>
 </head>
 <body>
+    <c:if test="${not empty ok}">
+        <span style="color: green">Rezerwacja udana!</span>
+    </c:if>
     <form action="/" method="post">
         <div class="col-md-3">
             Data od
