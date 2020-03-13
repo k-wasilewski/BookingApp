@@ -89,6 +89,16 @@ public class HomeController {
         long fifteenMinsInMillis = 60000*15;
         String price="";
 
+        if (name.length()<3 || surname.length()<3 || !Character.isUpperCase(name.charAt(0))
+                || !Character.isUpperCase(surname.charAt(0))) {
+            model.addAttribute("lengthError", true);
+
+            model.addAttribute("movie", movie);
+            Seat seat = movie.getSeatById(seatId);
+            model.addAttribute("seat", seat);
+            return "booking";
+        }
+
         switch (age) {
             case "adult":
                 price="25,00";

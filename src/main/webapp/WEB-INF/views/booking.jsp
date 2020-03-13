@@ -6,6 +6,10 @@
     <title>Title</title>
 </head>
 <body>
+    <c:if test="${lengthError==true}">
+        <span style="color: red">Imię oraz nazwisko muszą zawierać co najmniej 3 znaki
+            i zaczynać się wielką literą</span>
+    </c:if>
     <form action="/doBook" method="post">
         <input hidden value="${seat.id}" name="seatId">
         <input hidden value="${movie.id}" name="movieId">
