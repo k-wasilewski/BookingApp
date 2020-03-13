@@ -1,9 +1,14 @@
 package pl.touk.bookingapp.db.entities;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="movies")
@@ -18,6 +23,43 @@ public class Movie {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "room")
     private Room room;
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Seat> seats;
+
+    public Movie(String name, Date date, Time time, Room room) {
+        this.name=name;
+        this.date=date;
+        this.time=time;
+        this.room=room;
+        this.seats=this.room.getSeats();
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public List<Seat> getSeats() {
+        return seats;
+    }
+
+    public List<Seat> getAvailableSeats() {
+        List<Seat> availableSeats = new ArrayList<>();
+        for (Seat s: this.seats) {
+            if (s.isAvailable()) {
+                availableSeats.add(s);
+            }
+        }
+        return availableSeats;
+    }
+
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
+    }
 
     public Integer getId() {
         return id;

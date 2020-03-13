@@ -1,4 +1,4 @@
-package pl.touk.bookingapp.db.repos;
+package pl.touk.bookingapp.db.dao;
 
 import org.springframework.stereotype.Repository;
 import pl.touk.bookingapp.db.entities.Room;

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.touk.bookingapp.db.entities.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
+import pl.touk.bookingapp.db.entities.Seat;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -16,5 +17,4 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             "m.time > :frommH AND m.time < :tooH")
     List<Movie> customFindWithinDatesAndTimes(@Param("fromm") Date from, @Param("too") Date to,
                                               @Param("frommH")Time fromH, @Param("tooH") Time toH);
-
 }

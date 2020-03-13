@@ -6,6 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-    ${movie}
+    <h2>${movie}</h2>
+    room: ${movie.room}, available seats: ${availableSeats}
 </body>
 </html>

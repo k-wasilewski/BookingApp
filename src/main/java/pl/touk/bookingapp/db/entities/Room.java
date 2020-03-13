@@ -1,5 +1,8 @@
 package pl.touk.bookingapp.db.entities;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -10,7 +13,8 @@ public class Room {
     @Id
     private Integer id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Seat> seats;
 
     public List<Seat> getSeats() {
@@ -39,6 +43,6 @@ public class Room {
 
     @Override
     public String toString() {
-        return "room: "+this.name;
+        return this.name;
     }
 }

@@ -56,6 +56,8 @@ public class HomeController {
     public String movieDetails(@RequestParam("id") int id, Model model) {
         Movie movie = movieRepository.findById(id);
         model.addAttribute("movie", movie);
+        model.addAttribute("availableSeats", movie.getAvailableSeats());
+
         return "movieDetails";
     }
 
