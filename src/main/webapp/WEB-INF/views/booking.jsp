@@ -10,6 +10,9 @@
         <span style="color: red">Imię oraz nazwisko muszą zawierać co najmniej 3 znaki
             i zaczynać się wielką literą</span>
     </c:if>
+    <c:if test="${surnameError==true}">
+        <span style="color: red">Niepoprawne nazwisko</span>
+    </c:if>
     <form action="/doBook" method="post">
         <input hidden value="${seat.id}" name="seatId">
         <input hidden value="${movie.id}" name="movieId">

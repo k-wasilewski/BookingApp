@@ -98,6 +98,14 @@ public class HomeController {
             model.addAttribute("seat", seat);
             return "booking";
         }
+        if (surname.contains("-") && !Character.isUpperCase(surname.charAt(surname.indexOf("-")+1))) {
+            model.addAttribute("surnameError", true);
+
+            model.addAttribute("movie", movie);
+            Seat seat = movie.getSeatById(seatId);
+            model.addAttribute("seat", seat);
+            return "booking";
+        }
 
         switch (age) {
             case "adult":
