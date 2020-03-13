@@ -54,6 +54,8 @@ public class HomeController {
             model.addAttribute("toH", toH);
         }
         model.addAttribute("movies", movieRepository.customFindWithinDatesAndTimes(from, to, fromH, toH));
+        model.addAttribute("redir", true);
+
         return "index";
     }
 
@@ -77,13 +79,29 @@ public class HomeController {
 
     @PostMapping("/doBook")
     public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seatId") int seatId,
-                         @RequestParam("name") String name, @RequestParam("surname") String surname) {
+                         @RequestParam("name") String name, @RequestParam("surname") String surname,
+                         @RequestParam("age") String age) {
         Movie movie = movieRepository.findById(movieId);
         Date date = movie.getDate();
         Time time = movie.getTime();
         Date dateNow = new Date(Calendar.getInstance().getTime().getTime());
         Time timeNow = new Time(Calendar.getInstance().getTime().getTime());
         long fifteenMinsInMillis = 60000*15;
+        String price="";
+
+        switch (age) {
+            case "adult":
+                price="25,00";
+                break;
+            case "student":
+                price="18,00";
+                break;
+            case "child":
+                price="12,50";
+                break;
+        }
+
+        Time expirationTime = Time.valueOf(time.toLocalTime().minusMinutes(15));
 
         if (dateNow.getTime()<date.getTime() || (date.getTime()==dateNow.getTime() && timeNow.getTime() < time.getTime() &&
                 time.getTime()-timeNow.getTime()>fifteenMinsInMillis)) {
@@ -93,6 +111,9 @@ public class HomeController {
             seat.setSurname(surname);
             seatDao.updateSeat(seat);
             model.addAttribute("ok", true);
+            model.addAttribute("date", date);
+            model.addAttribute("expiration", expirationTime);
+            model.addAttribute("price", price);
         } else {
             model.addAttribute("ok", false);
         }

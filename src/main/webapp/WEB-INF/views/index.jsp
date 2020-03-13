@@ -7,7 +7,10 @@
 </head>
 <body>
     <c:if test="${ok==true}">
-        <span style="color: green">Rezerwacja udana!</span>
+        <span style="color: green">Rezerwacja udana!</span><br>
+        <span style="color: green; font-weight: bold">
+            Rezerwacja ważna do ${date}, ${expiration}, cena biletu to ${price} zł
+        </span>
     </c:if>
     <c:if test="${ok==false}">
         <span style="color: red">Rezerwacja nieudana...</span>
@@ -36,14 +39,14 @@
     <c:if test="${not empty from and not empty to}">
         <h3>Wyniki dla okresu ${from} - ${to}</h3>
     </c:if>
-    <c:if test="${empty from or empty to}">
-        <span style="color: red">Należy podać przedział dat</span>
+    <c:if test="${not empty redir and (empty from or empty to)}">
+        <span style="color: red">Należy podać przedział dat</span><br>
     </c:if>
     <c:if test="${not empty fromH and not empty toH}">
         <h3>w godzinach ${fromH} - ${toH}</h3>
     </c:if>
-    <c:if test="${empty fromH or empty toH}">
-        <span style="color: red">Należy podać przedział godzin</span>
+    <c:if test="${not empty redir and (empty fromH or empty toH)}">
+        <span style="color: red">Należy podać przedział godzin</span><br>
     </c:if>
     <c:forEach items="${movies}" var="movie">
         ${movie}

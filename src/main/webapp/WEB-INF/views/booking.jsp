@@ -11,6 +11,11 @@
         <input hidden value="${movie.id}" name="movieId">
         Imię: <input type="text" name="name">
         Nazwisko: <input type="text" name="surname">
+        <select name="age">
+            <option selected="selected" value="adult">Dorosły</option>
+            <option value="student">Student</option>
+            <option value="child">Dziecko</option>
+        </select>
         <button type="submit">Rezerwuj</button>
     </form>
     <form>
