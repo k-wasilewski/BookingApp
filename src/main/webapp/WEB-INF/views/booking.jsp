@@ -14,7 +14,8 @@
         <span style="color: red">Niepoprawne nazwisko</span>
     </c:if>
     <form action="/doBook" method="post">
-        <input hidden value="${seat.id}" name="seatId">
+        ${seats}
+        <input hidden value="${seats}" name="seats">
         <input hidden value="${movie.id}" name="movieId">
         Imię: <input type="text" name="name">
         Nazwisko: <input type="text" name="surname">

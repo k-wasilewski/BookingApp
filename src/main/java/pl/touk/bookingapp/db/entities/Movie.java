@@ -24,17 +24,16 @@ public class Movie {
     @JoinColumn(name = "room")
     private Room room;
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Seat> seats;
 
     public Movie() {}
 
-    public Movie(String name, Date date, Time time, Room room) {
+    public Movie(String name, Date date, Time time, Room room, List<Seat> seats) {
         this.name=name;
         this.date=date;
         this.time=time;
         this.room=room;
-        this.seats=this.room.getSeats();
+        this.seats=seats;
     }
 
     public Room getRoom() {

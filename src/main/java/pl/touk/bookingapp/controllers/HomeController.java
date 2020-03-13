@@ -10,12 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.touk.bookingapp.db.repos.SeatRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class HomeController {
@@ -23,6 +26,8 @@ public class HomeController {
     MovieRepository movieRepository;
     @Autowired
     SeatDao seatDao;
+    @Autowired
+    SeatRepository seatRepository;
 
     @GetMapping("/")
     public String homeMoviesView() {
@@ -68,19 +73,39 @@ public class HomeController {
         return "movieDetails";
     }
 
-    @GetMapping("/book")
-    public String bookingView(Model model, @RequestParam("movieId") int movieId, @RequestParam("seatId") int seatId) {
+    @PostMapping("/book")
+    public String bookingView(Model model, @RequestParam("movieId") int movieId, HttpServletRequest request) {
+        List<Seat> seats = new ArrayList<>();
+        for (Seat s : seatRepository.findAllByIdNotNull()) {
+            String no = s.getNo();
+            boolean checked=false;
+            if (request.getParameter(s.getNo())!=null &&
+                    request.getParameter(s.getNo()).equals("checked")) {
+                seats.add(s);
+            };
+        }
+
         Movie movie = movieRepository.findById(movieId);
         model.addAttribute("movie", movie);
-        Seat seat = movie.getSeatById(seatId);
-        model.addAttribute("seat", seat);
+        model.addAttribute("seats", seats);
         return "booking";
     }
 
     @PostMapping("/doBook")
-    public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seatId") int seatId,
+    public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seats") String seats,
                          @RequestParam("name") String name, @RequestParam("surname") String surname,
                          @RequestParam("age") String age) {
+        String regex = "\\[(.*?)\\]";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(seats);
+        String seatsCommas="";
+        if (m.find()) seatsCommas=m.group(1);
+        System.out.println(seatsCommas);
+        String[] seatsArr=seatsCommas.split(", ");
+        List<String> seatsNos = new ArrayList<>();
+        for (String s : seatsArr) seatsNos.add(s);
+        System.out.println(seatsNos);
+        /*
         Movie movie = movieRepository.findById(movieId);
         Date date = movie.getDate();
         Time time = movie.getTime();
@@ -137,5 +162,8 @@ public class HomeController {
         }
 
         return "index";
+
+         */
+        return "";
     }
 }

@@ -13,17 +13,6 @@ public class Room {
     @Id
     private Integer id;
     private String name;
-    @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Seat> seats;
-
-    public List<Seat> getSeats() {
-        return seats;
-    }
-
-    public void setSeats(List<Seat> seats) {
-        this.seats = seats;
-    }
 
     public Integer getId() {
         return id;
