@@ -1,13 +1,9 @@
 package pl.touk.bookingapp.db.entities;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,8 +19,8 @@ public class Movie {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "room")
     private Room room;
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.MERGE)
-    private List<MoviesSeats> moviesSeats;
+    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
+    private List<MovieSeat> movieSeats;
 
     public Movie() {}
 
@@ -35,12 +31,12 @@ public class Movie {
         this.room=room;
     }
 
-    public List<MoviesSeats> getMoviesSeats() {
-        return moviesSeats;
+    public List<MovieSeat> getMovieSeats() {
+        return movieSeats;
     }
 
-    public void setMoviesSeats(List<MoviesSeats> moviesSeats) {
-        this.moviesSeats = moviesSeats;
+    public void setMovieSeats(List<MovieSeat> movieSeats) {
+        this.movieSeats = movieSeats;
     }
 
     public Room getRoom() {

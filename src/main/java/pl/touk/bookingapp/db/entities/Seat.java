@@ -10,12 +10,10 @@ public class Seat {
     @Id
     private Integer id;
     private String no;
-    @Column(name = "available", nullable = false, columnDefinition = "boolean default true")
-    private boolean available;
     private String name;
     private String surname;
-    @OneToMany(mappedBy = "seat", cascade = CascadeType.MERGE)
-    private List<MoviesSeats> moviesSeats;
+    @OneToMany(mappedBy = "seat", fetch = FetchType.LAZY)
+    private List<MovieSeat> movieSeats;
 
     public String getName() {
         return name;
@@ -25,12 +23,12 @@ public class Seat {
         this.name = name;
     }
 
-    public List<MoviesSeats> getMoviesSeats() {
-        return moviesSeats;
+    public List<MovieSeat> getMovieSeats() {
+        return movieSeats;
     }
 
-    public void setMoviesSeats(List<MoviesSeats> moviesSeats) {
-        this.moviesSeats = moviesSeats;
+    public void setMovieSeats(List<MovieSeat> movieSeats) {
+        this.movieSeats = movieSeats;
     }
 
     public String getSurname() {
@@ -39,14 +37,6 @@ public class Seat {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
     }
 
     public Integer getId() {

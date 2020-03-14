@@ -2,6 +2,7 @@ package pl.touk.bookingapp.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.touk.bookingapp.db.entities.Movie;
+import pl.touk.bookingapp.db.entities.Room;
 import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,7 +136,7 @@ public class HomeController {
         if (dateNow.getTime()<date.getTime() || (date.getTime()==dateNow.getTime() && timeNow.getTime() < time.getTime() &&
                 time.getTime()-timeNow.getTime()>fifteenMinsInMillis)) {
             for (Seat s : seats) {
-                s.setAvailable(false);
+                //s.setAvailable(false);
                 s.setName(name);
                 s.setSurname(surname);
                 seatRepository.save(s);

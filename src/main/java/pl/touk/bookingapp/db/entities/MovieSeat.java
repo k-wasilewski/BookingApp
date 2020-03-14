@@ -4,15 +4,17 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="mv_st")
-public class MoviesSeats {
+public class MovieSeat {
     @EmbeddedId
     private MoviesSeatsId id = new MoviesSeatsId();
     @ManyToOne(cascade = CascadeType.MERGE)
-    @MapsId("movieId")
-    private Movie movie;
-    @ManyToOne(cascade = CascadeType.MERGE)
     @MapsId("seatId")
     private Seat seat;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @MapsId("movieId")
+    private Movie movie;
+    @Column(name = "available", nullable = false, columnDefinition = "boolean default true")
+    private boolean available=true;
 
     public MoviesSeatsId getId() {
         return id;
@@ -31,5 +33,11 @@ public class MoviesSeats {
     }
     public void setSeat(Seat seat) {
         this.seat = seat;
+    }
+    public boolean isAvailable() {
+        return available;
+    }
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }
