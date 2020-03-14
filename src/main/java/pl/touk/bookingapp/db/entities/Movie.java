@@ -23,17 +23,24 @@ public class Movie {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "room")
     private Room room;
-    @ManyToMany
-    private List<Seat> seats;
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.MERGE)
+    private List<MoviesSeats> moviesSeats;
 
     public Movie() {}
 
-    public Movie(String name, Date date, Time time, Room room, List<Seat> seats) {
+    public Movie(String name, Date date, Time time, Room room) {
         this.name=name;
         this.date=date;
         this.time=time;
         this.room=room;
-        this.seats=seats;
+    }
+
+    public List<MoviesSeats> getMoviesSeats() {
+        return moviesSeats;
+    }
+
+    public void setMoviesSeats(List<MoviesSeats> moviesSeats) {
+        this.moviesSeats = moviesSeats;
     }
 
     public Room getRoom() {
@@ -44,6 +51,7 @@ public class Movie {
         this.room = room;
     }
 
+    /*
     public Seat getSeatById(int id) {
         for(Seat s: this.seats) {
             if (s.getId()==id) {
@@ -70,7 +78,7 @@ public class Movie {
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
     }
-
+*/
     public Integer getId() {
         return id;
     }

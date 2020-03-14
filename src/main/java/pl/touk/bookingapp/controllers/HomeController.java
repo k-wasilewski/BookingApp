@@ -1,7 +1,6 @@
 package pl.touk.bookingapp.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.touk.bookingapp.db.dao.SeatDao;
 import pl.touk.bookingapp.db.entities.Movie;
 import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
@@ -24,8 +23,6 @@ import java.util.regex.Pattern;
 public class HomeController {
     @Autowired
     MovieRepository movieRepository;
-    @Autowired
-    SeatDao seatDao;
     @Autowired
     SeatRepository seatRepository;
 
@@ -68,7 +65,7 @@ public class HomeController {
     public String movieDetails(@RequestParam("id") int id, Model model) {
         Movie movie = movieRepository.findById(id);
         model.addAttribute("movie", movie);
-        model.addAttribute("availableSeats", movie.getAvailableSeats());
+        //model.addAttribute("availableSeats", movie.getAvailableSeats());
 
         return "movieDetails";
     }
@@ -141,7 +138,7 @@ public class HomeController {
                 s.setAvailable(false);
                 s.setName(name);
                 s.setSurname(surname);
-                seatDao.updateSeat(s);
+                seatRepository.save(s);
             }
             model.addAttribute("ok", true);
             model.addAttribute("date", date);

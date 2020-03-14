@@ -1,6 +1,7 @@
 package pl.touk.bookingapp.db.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="seats")
@@ -13,6 +14,8 @@ public class Seat {
     private boolean available;
     private String name;
     private String surname;
+    @OneToMany(mappedBy = "seat", cascade = CascadeType.MERGE)
+    private List<MoviesSeats> moviesSeats;
 
     public String getName() {
         return name;
@@ -20,6 +23,14 @@ public class Seat {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<MoviesSeats> getMoviesSeats() {
+        return moviesSeats;
+    }
+
+    public void setMoviesSeats(List<MoviesSeats> moviesSeats) {
+        this.moviesSeats = moviesSeats;
     }
 
     public String getSurname() {
