@@ -92,20 +92,11 @@ public class HomeController {
     }
 
     @PostMapping("/doBook")
-    public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seats") String seats,
+    public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seats") String seatsString,
                          @RequestParam("name") String name, @RequestParam("surname") String surname,
                          @RequestParam("age") String age) {
-        String regex = "\\[(.*?)\\]";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(seats);
-        String seatsCommas="";
-        if (m.find()) seatsCommas=m.group(1);
-        System.out.println(seatsCommas);
-        String[] seatsArr=seatsCommas.split(", ");
-        List<String> seatsNos = new ArrayList<>();
-        for (String s : seatsArr) seatsNos.add(s);
-        System.out.println(seatsNos);
-        /*
+        List<Seat> seats = convertSeatsStringToList(seatsString);
+
         Movie movie = movieRepository.findById(movieId);
         Date date = movie.getDate();
         Time time = movie.getTime();
@@ -119,16 +110,14 @@ public class HomeController {
             model.addAttribute("lengthError", true);
 
             model.addAttribute("movie", movie);
-            Seat seat = movie.getSeatById(seatId);
-            model.addAttribute("seat", seat);
+            model.addAttribute("seats", seats);
             return "booking";
         }
         if (surname.contains("-") && !Character.isUpperCase(surname.charAt(surname.indexOf("-")+1))) {
             model.addAttribute("surnameError", true);
 
             model.addAttribute("movie", movie);
-            Seat seat = movie.getSeatById(seatId);
-            model.addAttribute("seat", seat);
+            model.addAttribute("seats", seats);
             return "booking";
         }
 
@@ -148,11 +137,12 @@ public class HomeController {
 
         if (dateNow.getTime()<date.getTime() || (date.getTime()==dateNow.getTime() && timeNow.getTime() < time.getTime() &&
                 time.getTime()-timeNow.getTime()>fifteenMinsInMillis)) {
-            Seat seat = movie.getSeatById(seatId);
-            seat.setAvailable(false);
-            seat.setName(name);
-            seat.setSurname(surname);
-            seatDao.updateSeat(seat);
+            for (Seat s : seats) {
+                s.setAvailable(false);
+                s.setName(name);
+                s.setSurname(surname);
+                seatDao.updateSeat(s);
+            }
             model.addAttribute("ok", true);
             model.addAttribute("date", date);
             model.addAttribute("expiration", expirationTime);
@@ -162,8 +152,24 @@ public class HomeController {
         }
 
         return "index";
+    }
 
-         */
-        return "";
+    private List<Seat> convertSeatsStringToList(String seats) {
+        List<Seat> seatsList = new ArrayList<>();
+        String seatsCommas="";
+
+        String regex = "\\[(.*?)\\]";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(seats);
+
+        if (m.find()) {
+            seatsCommas=m.group(1);
+        }
+        String[] seatsArr=seatsCommas.split(", ");
+        for (String s : seatsArr) {
+            Seat seat = seatRepository.findByNo(s);
+            seatsList.add(seat);
+        }
+        return seatsList;
     }
 }
