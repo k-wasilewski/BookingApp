@@ -2,6 +2,7 @@ package pl.touk.bookingapp.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.touk.bookingapp.db.entities.Movie;
+import pl.touk.bookingapp.db.entities.MovieSeat;
 import pl.touk.bookingapp.db.entities.Room;
 import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
@@ -66,7 +67,7 @@ public class HomeController {
     public String movieDetails(@RequestParam("id") int id, Model model) {
         Movie movie = movieRepository.findById(id);
         model.addAttribute("movie", movie);
-        //model.addAttribute("availableSeats", movie.getAvailableSeats());
+        model.addAttribute("availableSeats", movie.getAvailableSeats());
 
         return "movieDetails";
     }
@@ -136,7 +137,11 @@ public class HomeController {
         if (dateNow.getTime()<date.getTime() || (date.getTime()==dateNow.getTime() && timeNow.getTime() < time.getTime() &&
                 time.getTime()-timeNow.getTime()>fifteenMinsInMillis)) {
             for (Seat s : seats) {
-                //s.setAvailable(false);
+                for (MovieSeat ms : s.getMovieSeats()) {
+                    if (ms.getMovie().equals(movie)) {
+                        ms.setAvailable(false);
+                    }
+                }
                 s.setName(name);
                 s.setSurname(surname);
                 seatRepository.save(s);

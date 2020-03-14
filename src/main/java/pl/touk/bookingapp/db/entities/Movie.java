@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -60,17 +61,19 @@ public class Movie {
     public List<Seat> getSeats() {
         return seats;
     }
+    */
 
     public List<Seat> getAvailableSeats() {
         List<Seat> availableSeats = new ArrayList<>();
-        for (Seat s: this.seats) {
-            if (s.isAvailable()) {
-                availableSeats.add(s);
+        for (MovieSeat ms: this.getMovieSeats()) {
+            if (ms.isAvailable()) {
+                availableSeats.add(ms.getSeat());
             }
         }
         return availableSeats;
     }
 
+    /*
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
     }
