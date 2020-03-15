@@ -46,6 +46,9 @@ class AppInitializator {
         List<Seat> seats2 = seatRepository.findByIdGreaterThan(3);
         Room s2 = roomRepository.getById(2);
 
+        List<Seat> seats3 = seatRepository.findByIdLessThan(4);
+        Room s3 = roomRepository.getById(3);
+
         Movie panSamochodzik = new Movie("Pan samochodzik", Date.valueOf("2019-03-15"), Time.valueOf("12:00:00"),
                 s1);
         movieRepository.save(panSamochodzik);
@@ -55,6 +58,16 @@ class AppInitializator {
                 s1);
         movieRepository.save(imperiumKontratakuje);
         setMovieSeats(imperiumKontratakuje, seats1);
+
+        Movie imperiumKontratakuje2 = new Movie("Imperium kontratakuje", Date.valueOf("2021-06-15"), Time.valueOf("22:00:00"),
+                s3);
+        movieRepository.save(imperiumKontratakuje2);
+        setMovieSeats(imperiumKontratakuje2, seats3);
+
+        Movie imperiumKontratakuje3 = new Movie("Imperium kontratakuje", Date.valueOf("2021-07-15"), Time.valueOf("22:00:00"),
+                s3);
+        movieRepository.save(imperiumKontratakuje3);
+        setMovieSeats(imperiumKontratakuje3, seats3);
 
         Movie ogniemIMieczem = new Movie("Ogniem i mieczem", Date.valueOf("2019-12-15"), Time.valueOf("08:00:00"),
                 s2);

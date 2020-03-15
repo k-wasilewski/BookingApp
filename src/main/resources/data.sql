@@ -9,3 +9,4 @@ INSERT INTO seats(no, movie_id) VALUES ('B3', 1);
 
 INSERT INTO rooms(name) VALUES('sala1');
 INSERT INTO rooms(name) VALUES('sala2');
+INSERT INTO rooms(name) VALUES('sala3');
