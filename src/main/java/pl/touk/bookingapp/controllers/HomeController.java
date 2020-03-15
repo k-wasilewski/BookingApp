@@ -2,8 +2,6 @@ package pl.touk.bookingapp.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.touk.bookingapp.db.entities.Movie;
-import pl.touk.bookingapp.db.entities.MovieSeat;
-import pl.touk.bookingapp.db.entities.Room;
 import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +73,7 @@ public class HomeController {
     @PostMapping("/book")
     public String bookingView(Model model, @RequestParam("movieId") int movieId, HttpServletRequest request) {
         List<Seat> seats = new ArrayList<>();
-        for (Seat s : seatRepository.findAllByIdNotNull()) {
+        for (Seat s : seatRepository.findAllByMovie(movieRepository.findById(movieId))) {
             String no = s.getNo();
             boolean checked=false;
             if (request.getParameter(s.getNo())!=null &&
@@ -94,7 +92,7 @@ public class HomeController {
     public String doBook(Model model, @RequestParam("movieId") int movieId, @RequestParam("seats") String seatsString,
                          @RequestParam("name") String name, @RequestParam("surname") String surname,
                          @RequestParam("age") String age) {
-        List<Seat> seats = convertSeatsStringToList(seatsString);
+        List<Seat> seats = convertSeatsStringToList(seatsString, movieId);
 
         Movie movie = movieRepository.findById(movieId);
         Date date = movie.getDate();
@@ -137,11 +135,7 @@ public class HomeController {
         if (dateNow.getTime()<date.getTime() || (date.getTime()==dateNow.getTime() && timeNow.getTime() < time.getTime() &&
                 time.getTime()-timeNow.getTime()>fifteenMinsInMillis)) {
             for (Seat s : seats) {
-                for (MovieSeat ms : s.getMovieSeats()) {
-                    if (ms.getMovie().equals(movie)) {
-                        ms.setAvailable(false);
-                    }
-                }
+                s.setAvailable(false);
                 s.setName(name);
                 s.setSurname(surname);
                 seatRepository.save(s);
@@ -157,7 +151,11 @@ public class HomeController {
         return "index";
     }
 
-    private List<Seat> convertSeatsStringToList(String seats) {
+    private List<Seat> convertSeatsStringToList(String seats, Integer movieId) {
+        Movie movie=null;
+        if (movieRepository.findById(movieId)!=null) {
+            movie = movieRepository.findById(movieId).get();
+        }
         List<Seat> seatsList = new ArrayList<>();
         String seatsCommas="";
 
@@ -170,7 +168,7 @@ public class HomeController {
         }
         String[] seatsArr=seatsCommas.split(", ");
         for (String s : seatsArr) {
-            Seat seat = seatRepository.findByNo(s);
+            Seat seat = seatRepository.findByNoAndMovie(s, movie);
             seatsList.add(seat);
         }
         return seatsList;

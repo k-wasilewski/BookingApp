@@ -3,18 +3,16 @@ package pl.touk.bookingapp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.touk.bookingapp.db.entities.Movie;
-import pl.touk.bookingapp.db.entities.MovieSeat;
 import pl.touk.bookingapp.db.entities.Room;
 import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
-import pl.touk.bookingapp.db.repos.MoviesSeatsRepository;
 import pl.touk.bookingapp.db.repos.RoomRepository;
 import pl.touk.bookingapp.db.repos.SeatRepository;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,19 +24,18 @@ class AppInitializator {
     @Autowired
     SeatRepository seatRepository;
     @Autowired
-    MoviesSeatsRepository moviesSeatsRepository;
+    EntityManager entityManager;
 
-    private void setMoviesSeats(Movie movie, List<Seat> seats) {
-        List<MovieSeat> movieSeatList = new ArrayList<>();
+    private void setMovieSeats(Movie movie, List<Seat> seats) {
         for (Seat s : seats) {
-            MovieSeat movieSeat = new MovieSeat();
-            movieSeat.setMovie(movie);
-            movieSeat.setSeat(s);
-            movieSeatList.add(movieSeat);
-            s.setMovieSeats(movieSeatList);
-            moviesSeatsRepository.save(movieSeat);
+            entityManager.detach(s);
+            s.setId(null);
+            movieRepository.save(movie);
+            s.setMovie(movie);
+            seatRepository.save(s);
         }
-        movie.setMovieSeats(movieSeatList);
+        movie.setSeats(seats);
+        movieRepository.save(movie);
     }
 
     @PostConstruct
@@ -51,38 +48,38 @@ class AppInitializator {
 
         Movie panSamochodzik = new Movie("Pan samochodzik", Date.valueOf("2019-03-15"), Time.valueOf("12:00:00"),
                 s1);
-        setMoviesSeats(panSamochodzik, seats1);
         movieRepository.save(panSamochodzik);
+        setMovieSeats(panSamochodzik, seats1);
 
         Movie imperiumKontratakuje = new Movie("Imperium kontratakuje", Date.valueOf("2021-12-15"), Time.valueOf("22:00:00"),
                 s1);
-        setMoviesSeats(imperiumKontratakuje, seats1);
         movieRepository.save(imperiumKontratakuje);
+        setMovieSeats(imperiumKontratakuje, seats1);
 
         Movie ogniemIMieczem = new Movie("Ogniem i mieczem", Date.valueOf("2019-12-15"), Time.valueOf("08:00:00"),
                 s2);
-        setMoviesSeats(ogniemIMieczem, seats2);
         movieRepository.save(ogniemIMieczem);
+        setMovieSeats(ogniemIMieczem, seats2);
 
         Movie najlepszy = new Movie("Najlepszy", Date.valueOf("2020-03-13"), Time.valueOf("12:00:00"),
                 s2);
-        setMoviesSeats(najlepszy, seats2);
         movieRepository.save(najlepszy);
+        setMovieSeats(najlepszy, seats2);
 
         Movie starTrek = new Movie("StarTrek", Date.valueOf("2020-03-12"), Time.valueOf("12:00:00"),
                 s1);
-        setMoviesSeats(starTrek, seats1);
         movieRepository.save(starTrek);
+        setMovieSeats(starTrek, seats1);
 
         Movie najlepszy2 = new Movie("Najlepszy", Date.valueOf("2021-03-13"), Time.valueOf("12:00:00"),
                 s2);
-        setMoviesSeats(najlepszy2, seats2);
         movieRepository.save(najlepszy2);
+        setMovieSeats(najlepszy2, seats2);
 
         Movie najlepszy3 = new Movie("Najlepszy", Date.valueOf("2021-03-13"), Time.valueOf("14:00:00"),
                 s1);
-        setMoviesSeats(najlepszy3, seats1);
         movieRepository.save(najlepszy3);
+        setMovieSeats(najlepszy3, seats1);
     }
 }
 

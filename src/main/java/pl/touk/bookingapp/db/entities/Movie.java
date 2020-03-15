@@ -21,7 +21,7 @@ public class Movie {
     @JoinColumn(name = "room")
     private Room room;
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
-    private List<MovieSeat> movieSeats;
+    private List<Seat> seats;
 
     public Movie() {}
 
@@ -32,12 +32,12 @@ public class Movie {
         this.room=room;
     }
 
-    public List<MovieSeat> getMovieSeats() {
-        return movieSeats;
+    public List<Seat> getSeats() {
+        return seats;
     }
 
-    public void setMovieSeats(List<MovieSeat> movieSeats) {
-        this.movieSeats = movieSeats;
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
     }
 
     public Room getRoom() {
@@ -48,7 +48,6 @@ public class Movie {
         this.room = room;
     }
 
-    /*
     public Seat getSeatById(int id) {
         for(Seat s: this.seats) {
             if (s.getId()==id) {
@@ -58,26 +57,16 @@ public class Movie {
         return null;
     }
 
-    public List<Seat> getSeats() {
-        return seats;
-    }
-    */
-
     public List<Seat> getAvailableSeats() {
         List<Seat> availableSeats = new ArrayList<>();
-        for (MovieSeat ms: this.getMovieSeats()) {
-            if (ms.isAvailable()) {
-                availableSeats.add(ms.getSeat());
+        for (Seat seat: this.seats) {
+            if (seat.isAvailable()) {
+                availableSeats.add(seat);
             }
         }
         return availableSeats;
     }
 
-    /*
-    public void setSeats(List<Seat> seats) {
-        this.seats = seats;
-    }
-*/
     public Integer getId() {
         return id;
     }

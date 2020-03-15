@@ -12,23 +12,33 @@ public class Seat {
     private String no;
     private String name;
     private String surname;
-    @OneToMany(mappedBy = "seat", fetch = FetchType.LAZY)
-    private List<MovieSeat> movieSeats;
+    @ManyToOne
+    private Movie movie;
+    @Column(name = "available", nullable = false, columnDefinition = "boolean default true")
+    private boolean available;
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 
     public String getName() {
         return name;
     }
 
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<MovieSeat> getMovieSeats() {
-        return movieSeats;
-    }
-
-    public void setMovieSeats(List<MovieSeat> movieSeats) {
-        this.movieSeats = movieSeats;
     }
 
     public String getSurname() {
