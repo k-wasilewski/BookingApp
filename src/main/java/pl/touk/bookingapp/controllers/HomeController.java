@@ -67,7 +67,8 @@ public class HomeController {
         model.addAttribute("movie", movie);
         List<Seat> allAvailableSeats = movie.getAvailableSeats();
         List<Seat> allUnavailableSeats = movie.getUnvailableSeats();
-        List<Seat> availableSeats = new ArrayList<>();
+        List<Seat> availableSeats1 = new ArrayList<>();
+        List<Seat> availableSeats2 = new ArrayList<>();
 
         int positionsInRow=1;
         for (Seat s : seatRepository.findAllByIdNotNull()) {
@@ -82,7 +83,7 @@ public class HomeController {
         }
 
         if (allUnavailableSeats.isEmpty()) {
-            model.addAttribute("availableSeats", allAvailableSeats);
+            model.addAttribute("availableSeats1", allAvailableSeats);
         } else if (allAvailableSeats.size()>=seatsNo) {
             int firstPos = allUnavailableSeats.get(0).getPos();
             char firstRow = allUnavailableSeats.get(0).getRow();
@@ -118,21 +119,26 @@ public class HomeController {
                     char row = firstRow;
                     int pos = firstPos+i;
                     Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
-                    if (toAdd!=null) availableSeats.add(toAdd);
+                    if (toAdd!=null) availableSeats1.add(toAdd);
                 }
             }
             if (lastRow!='.') {
                 System.out.println("in6");
                 for (int i=0; i<seatsNo; i++) {
                     char row = lastRow;
-                    int pos = lastPos-i;
+                    int pos = lastPos+i;
                     Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
-                    if (toAdd!=null) availableSeats.add(toAdd);
+                    if (toAdd!=null) availableSeats2.add(toAdd);
                 }
             }
+            System.out.println(availableSeats1);
+            System.out.println(availableSeats2);
+            if (availableSeats1.size()<seatsNo) availableSeats1.clear();
+            if (availableSeats2.size()<seatsNo) availableSeats2.clear();
             System.out.println(lastPos);
             System.out.println(lastRow);
-            model.addAttribute("availableSeats", availableSeats);
+            model.addAttribute("availableSeats1", availableSeats1);
+            model.addAttribute("availableSeats2", availableSeats2);
         }
         model.addAttribute("seatsNo", seatsNo);
 
@@ -142,6 +148,11 @@ public class HomeController {
     @PostMapping("/book")
     public String bookingView(Model model, @RequestParam("movieId") int movieId, HttpServletRequest request,
                               @RequestParam("seatsNo") int seatsNo) {
+        List<Seat> availableSeats1 = convertSeatsStringToList(request.getParameter("availableSeats1"), movieId);
+        List<Seat> availableSeats2 = convertSeatsStringToList(request.getParameter("availableSeats2"), movieId);
+        int list = 0;
+        boolean listsError=false;
+
         List<Seat> seats = new ArrayList<>();
         for (Seat s : seatRepository.findAllByMovie(movieRepository.findById(movieId))) {
             String no = s.getNo();
@@ -150,12 +161,27 @@ public class HomeController {
                     request.getParameter(s.getNo()).equals("checked")) {
                 seats.add(s);
             };
+            if (availableSeats1.contains(s) && (list==0||list==1)) list = 1;
+            else if (availableSeats2.contains(s) && (list==0||list==2)) list = 2;
+            else listsError=true;
+        }
+
+        if (listsError) {
+            Movie movie = movieRepository.findById(movieId);
+            model.addAttribute("movie", movie);
+            model.addAttribute("availableSeats", convertSeatsStringToList(
+                    request.getParameter("availableSeats"), movieId));
+            model.addAttribute("listsError", true);
+            model.addAttribute("seatsNo", seatsNo);
+
+            return "movieDetails";
         }
 
         if (seats.size()!=seatsNo) {
             Movie movie = movieRepository.findById(movieId);
             model.addAttribute("movie", movie);
-            model.addAttribute("availableSeats", convertSeatsStringToList(request.getParameter("availableSeats"), movieId)); //availableSeats!!!
+            model.addAttribute("availableSeats", convertSeatsStringToList(
+                    request.getParameter("availableSeats"), movieId));
             model.addAttribute("noChecked", true);
             model.addAttribute("seatsNo", seatsNo);
 

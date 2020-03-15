@@ -11,10 +11,23 @@
     <c:if test="${noChecked==true}">
         <span style="color: red">Liczba wybranych miejsc nie zgadza się z podaną liczbą</span>
     </c:if>
+    <c:if test="${listsError==true}">
+        <span style="color: red">Należy wybrać miejsca tylko z jednej listy</span>
+    </c:if>
     <form action="/book" method="post">
         <input hidden name="seatsNo" value="${seatsNo}">
         <input hidden name="movieId" value="${movie.id}">
-        <c:forEach items="${availableSeats}" var="seat">
+        <input hidden name="availableSeats1" value="${availableSeats1}">
+        <input hidden name="availableSeats2" value="${availableSeats2}">
+        <c:forEach items="${availableSeats1}" var="seat">
+            ${seat}
+            <input type="checkbox" name="${seat.no}" value="checked">
+            <br>
+        </c:forEach>
+        <c:if test="${not empty availableSeats1 and not empty availableSeats2}">
+            lub
+        </c:if>
+        <c:forEach items="${availableSeats2}" var="seat">
             ${seat}
             <input type="checkbox" name="${seat.no}" value="checked">
             <br>
