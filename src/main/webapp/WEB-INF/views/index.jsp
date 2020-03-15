@@ -50,7 +50,11 @@
     </c:if>
     <c:forEach items="${movies}" var="movie">
         ${movie}
-        <a href="/details?id=${movie.id}"><button>Szczegóły</button></a>
+        <form action="/details" method="post">
+            <input hidden name="id" value="${movie.id}">
+            Liczba miejsc: <input type="number" name="seatsNo">
+            <button type="submit">Przejdź do rezerwacji</button>
+        </form>
         <br>
     </c:forEach>
 </body>

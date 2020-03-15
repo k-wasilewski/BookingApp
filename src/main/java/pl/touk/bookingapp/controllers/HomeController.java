@@ -61,8 +61,8 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/details")
-    public String movieDetails(@RequestParam("id") int id, Model model) {
+    @PostMapping("/details")
+    public String movieDetails(@RequestParam("id") int id, @RequestParam("seatsNo") int seatsNo, Model model) {
         Movie movie = movieRepository.findById(id);
         model.addAttribute("movie", movie);
         List<Seat> allAvailableSeats = movie.getAvailableSeats();
@@ -110,12 +110,14 @@ public class HomeController {
             }
             model.addAttribute("availableSeats", availableSeats);
         }
+        model.addAttribute("seatsNo", seatsNo);
 
         return "movieDetails";
     }
 
     @PostMapping("/book")
-    public String bookingView(Model model, @RequestParam("movieId") int movieId, HttpServletRequest request) {
+    public String bookingView(Model model, @RequestParam("movieId") int movieId, HttpServletRequest request,
+                              @RequestParam("seatsNo") int seatsNo) {
         List<Seat> seats = new ArrayList<>();
         for (Seat s : seatRepository.findAllByMovie(movieRepository.findById(movieId))) {
             String no = s.getNo();
@@ -126,7 +128,7 @@ public class HomeController {
             };
         }
 
-        if (seats.isEmpty()) {
+        if (seats.size()!=seatsNo) {
             Movie movie = movieRepository.findById(movieId);
             model.addAttribute("movie", movie);
             model.addAttribute("availableSeats", movie.getAvailableSeats());
