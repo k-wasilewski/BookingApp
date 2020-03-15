@@ -253,6 +253,11 @@ public class HomeController {
             model.addAttribute("ok", false);
         }
 
+        model.addAttribute("from", new ArrayList<>());
+        model.addAttribute("to", new ArrayList<>());
+        model.addAttribute("fromH", new ArrayList<>());
+        model.addAttribute("toH", new ArrayList<>());
+        model.addAttribute("movies", null);
         return "index";
     }
 
