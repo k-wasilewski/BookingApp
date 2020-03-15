@@ -103,7 +103,6 @@ public class HomeController {
             if (lastPos<seatRepository.findAllByRow(lastRow).get(seatRepository.
                     findAllByRow(lastRow).size()-1-seatsNo).getPos()) {//jesli w tym rzedzie jest miejsce na seatsNo
                 System.out.println("in");
-                lastPos += seatsNo;
             } else if (lastRow!=highestRow) {
                 lastRow += 1;
                 lastPos = 1;
@@ -169,8 +168,8 @@ public class HomeController {
         if (listsError) {
             Movie movie = movieRepository.findById(movieId);
             model.addAttribute("movie", movie);
-            model.addAttribute("availableSeats", convertSeatsStringToList(
-                    request.getParameter("availableSeats"), movieId));
+            model.addAttribute("availableSeats1", availableSeats1);
+            model.addAttribute("availableSeats2", availableSeats2);
             model.addAttribute("listsError", true);
             model.addAttribute("seatsNo", seatsNo);
 

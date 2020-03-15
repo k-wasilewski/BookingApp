@@ -27,6 +27,7 @@
         <c:if test="${not empty availableSeats1 and not empty availableSeats2}">
             lub
         </c:if>
+        <br>
         <c:forEach items="${availableSeats2}" var="seat">
             ${seat}
             <input type="checkbox" name="${seat.no}" value="checked">
