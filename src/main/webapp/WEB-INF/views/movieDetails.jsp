@@ -19,6 +19,7 @@
             <input type="checkbox" name="${seat.no}" value="checked">
             <br>
         </c:forEach>
+        <input hidden name="availableSeats" value="${availableSeats}">
         <button type="submit">Rezerwuj</button>
     </form>
     <form>

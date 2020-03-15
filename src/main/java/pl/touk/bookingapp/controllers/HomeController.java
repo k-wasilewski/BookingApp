@@ -68,6 +68,14 @@ public class HomeController {
         List<Seat> allAvailableSeats = movie.getAvailableSeats();
         List<Seat> allUnavailableSeats = movie.getUnvailableSeats();
         List<Seat> availableSeats = new ArrayList<>();
+
+        int positionsInRow=1;
+        for (Seat s : seatRepository.findAllByIdNotNull()) {
+            if (s.getPos()>positionsInRow) {
+                positionsInRow=s.getPos();
+            }
+        }
+
         char highestRow='A';
         for (Seat s : seatRepository.findAllByIdNotNull()) {
             if (s.getRow()>highestRow) highestRow=s.getRow();
@@ -75,39 +83,55 @@ public class HomeController {
 
         if (allUnavailableSeats.isEmpty()) {
             model.addAttribute("availableSeats", allAvailableSeats);
-        } else {
+        } else if (allAvailableSeats.size()>=seatsNo) {
             int firstPos = allUnavailableSeats.get(0).getPos();
             char firstRow = allUnavailableSeats.get(0).getRow();
-            if (firstPos!=1) {
-                firstPos-=1;
+            if (firstPos>seatsNo) {
+                firstPos-=(seatsNo);
             } else if (firstRow!='A') {
                 firstRow = (char) (firstRow-1);
                 firstPos = seatRepository.findAllByRow(firstRow).get(seatRepository.
-                        findAllByRow(firstRow).size()-1).getPos();
+                        findAllByRow(firstRow).size()-1-seatsNo).getPos();
             } else {
                 firstPos=0;
             }
 
             int lastPos = allUnavailableSeats.get(allUnavailableSeats.size()-1).getPos();
             char lastRow = allUnavailableSeats.get(allUnavailableSeats.size()-1).getRow();
-            if (lastPos!=seatRepository.findAllByRow(firstRow).get(seatRepository.
-                    findAllByRow(firstRow).size()-1).getPos()) {
-                lastPos += 1;
+
+            if (lastPos<seatRepository.findAllByRow(lastRow).get(seatRepository.
+                    findAllByRow(lastRow).size()-1-seatsNo).getPos()) {//jesli w tym rzedzie jest miejsce na seatsNo
+                System.out.println("in");
+                lastPos += seatsNo;
             } else if (lastRow!=highestRow) {
-                lastRow = (char) (lastRow+1);
+                lastRow += 1;
                 lastPos = 1;
+                System.out.println("in2");
             } else {
                 lastRow='.';
+                System.out.println("in3");
             }
 
             if (firstPos!=0) {
-                Seat firstSeat = seatRepository.findByMovieAndRowAndPos(movie, firstRow, firstPos);
-                availableSeats.add(firstSeat);
+                System.out.println("in4");
+                for (int i=0; i<seatsNo; i++) {
+                    char row = firstRow;
+                    int pos = firstPos+i;
+                    Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
+                    if (toAdd!=null) availableSeats.add(toAdd);
+                }
             }
             if (lastRow!='.') {
-                Seat lastSeat = seatRepository.findByMovieAndRowAndPos(movie, lastRow, lastPos);
-                availableSeats.add(lastSeat);
+                System.out.println("in6");
+                for (int i=0; i<seatsNo; i++) {
+                    char row = lastRow;
+                    int pos = lastPos-i;
+                    Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
+                    if (toAdd!=null) availableSeats.add(toAdd);
+                }
             }
+            System.out.println(lastPos);
+            System.out.println(lastRow);
             model.addAttribute("availableSeats", availableSeats);
         }
         model.addAttribute("seatsNo", seatsNo);
@@ -131,8 +155,9 @@ public class HomeController {
         if (seats.size()!=seatsNo) {
             Movie movie = movieRepository.findById(movieId);
             model.addAttribute("movie", movie);
-            model.addAttribute("availableSeats", movie.getAvailableSeats());
+            model.addAttribute("availableSeats", convertSeatsStringToList(request.getParameter("availableSeats"), movieId)); //availableSeats!!!
             model.addAttribute("noChecked", true);
+            model.addAttribute("seatsNo", seatsNo);
 
             return "movieDetails";
         }
