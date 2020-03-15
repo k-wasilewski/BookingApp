@@ -12,4 +12,6 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
     Seat findByNoAndMovie(String no, Movie movie);
     List<Seat> findAllByMovie(Movie movie);
     List<Seat> findByIdLessThan(Integer no);
+    List<Seat> findAllByRow(char row);
+    Seat findByMovieAndRowAndPos(Movie movie, char row, int pos);
 }

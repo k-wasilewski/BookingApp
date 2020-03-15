@@ -67,6 +67,16 @@ public class Movie {
         return availableSeats;
     }
 
+    public List<Seat> getUnvailableSeats() {
+        List<Seat> unavailableSeats = new ArrayList<>();
+        for (Seat seat: this.seats) {
+            if (!seat.isAvailable()) {
+                unavailableSeats.add(seat);
+            }
+        }
+        return unavailableSeats;
+    }
+
     public Integer getId() {
         return id;
     }

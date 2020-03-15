@@ -65,7 +65,51 @@ public class HomeController {
     public String movieDetails(@RequestParam("id") int id, Model model) {
         Movie movie = movieRepository.findById(id);
         model.addAttribute("movie", movie);
-        model.addAttribute("availableSeats", movie.getAvailableSeats());
+        List<Seat> allAvailableSeats = movie.getAvailableSeats();
+        List<Seat> allUnavailableSeats = movie.getUnvailableSeats();
+        List<Seat> availableSeats = new ArrayList<>();
+        char highestRow='A';
+        for (Seat s : seatRepository.findAllByIdNotNull()) {
+            if (s.getRow()>highestRow) highestRow=s.getRow();
+        }
+
+        if (allUnavailableSeats.isEmpty()) {
+            model.addAttribute("availableSeats", allAvailableSeats);
+        } else {
+            int firstPos = allUnavailableSeats.get(0).getPos();
+            char firstRow = allUnavailableSeats.get(0).getRow();
+            if (firstPos!=1) {
+                firstPos-=1;
+            } else if (firstRow!='A') {
+                firstRow = (char) (firstRow-1);
+                firstPos = seatRepository.findAllByRow(firstRow).get(seatRepository.
+                        findAllByRow(firstRow).size()-1).getPos();
+            } else {
+                firstPos=0;
+            }
+
+            int lastPos = allUnavailableSeats.get(allUnavailableSeats.size()-1).getPos();
+            char lastRow = allUnavailableSeats.get(allUnavailableSeats.size()-1).getRow();
+            if (lastPos!=seatRepository.findAllByRow(firstRow).get(seatRepository.
+                    findAllByRow(firstRow).size()-1).getPos()) {
+                lastPos += 1;
+            } else if (lastRow!=highestRow) {
+                lastRow = (char) (lastRow+1);
+                lastPos = 1;
+            } else {
+                lastRow='.';
+            }
+
+            if (firstPos!=0) {
+                Seat firstSeat = seatRepository.findByMovieAndRowAndPos(movie, firstRow, firstPos);
+                availableSeats.add(firstSeat);
+            }
+            if (lastRow!='.') {
+                Seat lastSeat = seatRepository.findByMovieAndRowAndPos(movie, lastRow, lastPos);
+                availableSeats.add(lastSeat);
+            }
+            model.addAttribute("availableSeats", availableSeats);
+        }
 
         return "movieDetails";
     }

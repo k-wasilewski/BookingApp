@@ -16,6 +16,24 @@ public class Seat {
     private Movie movie;
     @Column(name = "available", nullable = false, columnDefinition = "boolean default true")
     private boolean available;
+    private char row;
+    private int pos;
+
+    public char getRow() {
+        return row;
+    }
+
+    public void setRow(char row) {
+        this.row = row;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
 
     public boolean isAvailable() {
         return available;
