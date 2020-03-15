@@ -82,6 +82,15 @@ public class HomeController {
             };
         }
 
+        if (seats.isEmpty()) {
+            Movie movie = movieRepository.findById(movieId);
+            model.addAttribute("movie", movie);
+            model.addAttribute("availableSeats", movie.getAvailableSeats());
+            model.addAttribute("noChecked", true);
+
+            return "movieDetails";
+        }
+
         Movie movie = movieRepository.findById(movieId);
         model.addAttribute("movie", movie);
         model.addAttribute("seats", seats);

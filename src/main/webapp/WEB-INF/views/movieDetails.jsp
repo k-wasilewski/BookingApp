@@ -8,6 +8,9 @@
 <body>
     <h2>${movie}</h2>
     sala: ${movie.room}, wolne miejsca:<br>
+    <c:if test="${noChecked==true}">
+        <span style="color: red">Należy wybrać co najmniej jedno miejsce</span>
+    </c:if>
     <form action="/book" method="post">
         <input hidden name="movieId" value="${movie.id}">
         <c:forEach items="${availableSeats}" var="seat">
