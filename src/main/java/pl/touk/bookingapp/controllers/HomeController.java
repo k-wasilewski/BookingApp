@@ -76,7 +76,7 @@ public class HomeController {
         List<Seat> availableSeats1 = getAvailableSeats(movie, numberOfSeats).get(0);
         if (!availableSeats1.isEmpty()) model.addAttribute("availableSeats1", availableSeats1);
         List<Seat> availableSeats2 = getAvailableSeats(movie, numberOfSeats).get(1);
-        if (availableSeats2.isEmpty()) model.addAttribute("availableSeats2", availableSeats2);
+        if (!availableSeats2.isEmpty()) model.addAttribute("availableSeats2", availableSeats2);
 
         return "movieDetails";
     }
@@ -221,6 +221,9 @@ public class HomeController {
         return seatsList;
     }
 
+    /**
+     * find two sets of available number of seats right before and after already booked seats
+     */
     private List<List<Seat>> getAvailableSeats(Movie movie, int numberOfSeats) {
         List<Seat> allAvailableSeats = movie.getAvailableSeats();
         List<Seat> allUnavailableSeats = movie.getUnvailableSeats();
@@ -240,6 +243,9 @@ public class HomeController {
             if (s.getRow()>highestRow) highestRow=s.getRow();
         }
 
+        /*
+         * find the list of seats (size=numberOfSeats) right before already booked seats
+         */
         if (allUnavailableSeats.isEmpty()) {
             availableSeats1=allAvailableSeats;
         } else if (allAvailableSeats.size()>=numberOfSeats) {
@@ -255,23 +261,7 @@ public class HomeController {
                 firstPos=0;
             }
 
-            int lastPos = allUnavailableSeats.get(allUnavailableSeats.size()-1).getPos();
-            char lastRow = allUnavailableSeats.get(allUnavailableSeats.size()-1).getRow();
-
-            if (lastPos<seatRepository.findAllByRow(lastRow).get(seatRepository.
-                    findAllByRow(lastRow).size()-1-numberOfSeats).getPos()) {//jesli w tym rzedzie jest miejsce na seatsNo
-                System.out.println("in");
-            } else if (lastRow!=highestRow) {
-                lastRow += 1;
-                lastPos = 1;
-                System.out.println("in2");
-            } else {
-                lastRow='.';
-                System.out.println("in3");
-            }
-
             if (firstPos!=0) {
-                System.out.println("in4");
                 for (int i=0; i<numberOfSeats; i++) {
                     char row = firstRow;
                     int pos = firstPos+i;
@@ -279,8 +269,25 @@ public class HomeController {
                     if (toAdd!=null) availableSeats1.add(toAdd);
                 }
             }
+
+            /*
+             * find the list of seats (size=numberOfSeats) right after already booked seats
+             */
+            int lastPos = allUnavailableSeats.get(allUnavailableSeats.size()-1).getPos();
+            char lastRow = allUnavailableSeats.get(allUnavailableSeats.size()-1).getRow();
+
+            //are there free numberOfSeats in this row
+            if (lastPos<seatRepository.findAllByRow(lastRow).get(seatRepository.
+                    findAllByRow(lastRow).size()-numberOfSeats).getPos()) {
+                lastPos+=1;
+            } else if (lastRow!=highestRow) {
+                lastRow += 1;
+                lastPos = 1;
+            } else {
+                lastRow='.';
+            }
+
             if (lastRow!='.') {
-                System.out.println("in6");
                 for (int i=0; i<numberOfSeats; i++) {
                     char row = lastRow;
                     int pos = lastPos+i;
@@ -288,12 +295,9 @@ public class HomeController {
                     if (toAdd!=null) availableSeats2.add(toAdd);
                 }
             }
-            System.out.println(availableSeats1);
-            System.out.println(availableSeats2);
+            
             if (availableSeats1.size()<numberOfSeats) availableSeats1.clear();
             if (availableSeats2.size()<numberOfSeats) availableSeats2.clear();
-            System.out.println(lastPos);
-            System.out.println(lastRow);
         }
         availableSeatsLists.add(availableSeats1);
         availableSeatsLists.add(availableSeats2);
