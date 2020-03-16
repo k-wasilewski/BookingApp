@@ -89,6 +89,9 @@ public class HomeController {
         int list = 0;
         boolean listsError=false;
 
+        /*
+         * get checked seats
+         */
         List<Seat> seats = new ArrayList<>();
         for (Seat s : seatRepository.findAllByMovie(movieRepository.findById(movieId))) {
             String no = s.getNo();
@@ -102,6 +105,7 @@ public class HomeController {
             else listsError=true;
         }
 
+        //error handling
         if (listsError) {
             Movie movie = movieRepository.findById(movieId);
             model.addAttribute("movie", movie);
@@ -113,6 +117,7 @@ public class HomeController {
             return "movieDetails";
         }
 
+        //error handling
         if (seats.size()!=seatsNo) {
             Movie movie = movieRepository.findById(movieId);
             model.addAttribute("movie", movie);
@@ -144,6 +149,7 @@ public class HomeController {
         long fifteenMinsInMillis = 60000*15;
         String price="";
 
+        //error handling
         if (name.length()<3 || surname.length()<3 || !Character.isUpperCase(name.charAt(0))
                 || !Character.isUpperCase(surname.charAt(0))) {
             model.addAttribute("lengthError", true);
@@ -152,6 +158,8 @@ public class HomeController {
             model.addAttribute("seats", seats);
             return "booking";
         }
+
+        //error handling
         if (surname.contains("-") && !Character.isUpperCase(surname.charAt(surname.indexOf("-")+1))) {
             model.addAttribute("surnameError", true);
 
@@ -295,7 +303,7 @@ public class HomeController {
                     if (toAdd!=null) availableSeats2.add(toAdd);
                 }
             }
-            
+
             if (availableSeats1.size()<numberOfSeats) availableSeats1.clear();
             if (availableSeats2.size()<numberOfSeats) availableSeats2.clear();
         }
