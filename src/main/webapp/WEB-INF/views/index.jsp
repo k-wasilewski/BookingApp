@@ -15,6 +15,9 @@
     <c:if test="${ok==false}">
         <span style="color: red">Rezerwacja nieudana...</span>
     </c:if>
+    <c:if test="${numberError==true}">
+        <span style="color: red">Należy podać liczbę</span>
+    </c:if>
     <form action="/" method="post">
         <div class="col-md-3">
             Data od
