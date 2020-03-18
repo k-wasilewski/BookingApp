@@ -28,11 +28,13 @@ class AppInitializator {
 
     private void setMovieSeats(Movie movie, List<Seat> seats) {
         for (Seat s : seats) {
-            entityManager.detach(s);
-            s.setId(null);
-            movieRepository.save(movie);
-            s.setMovie(movie);
-            seatRepository.save(s);
+            Seat s2 = new Seat();
+            s2.setMovie(movie);
+            s2.setNo(s.getNo());
+            s2.setRow(s.getRow());
+            s2.setPos(s.getPos());
+            s2.setAvailable(true);
+            seatRepository.save(s2);
         }
         movie.setSeats(seats);
         movieRepository.save(movie);
