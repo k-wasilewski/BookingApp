@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="movies")
@@ -58,22 +59,16 @@ public class Movie {
     }
 
     public List<Seat> getAvailableSeats() {
-        List<Seat> availableSeats = new ArrayList<>();
-        for (Seat seat: this.seats) {
-            if (seat.isAvailable()) {
-                availableSeats.add(seat);
-            }
-        }
+        List<Seat> availableSeats = this.seats.stream()
+                .filter((seat -> seat.isAvailable()))
+                .collect(Collectors.toList());
         return availableSeats;
     }
 
     public List<Seat> getUnvailableSeats() {
-        List<Seat> unavailableSeats = new ArrayList<>();
-        for (Seat seat: this.seats) {
-            if (!seat.isAvailable()) {
-                unavailableSeats.add(seat);
-            }
-        }
+        List<Seat> unavailableSeats = this.seats.stream()
+                .filter((seat -> !seat.isAvailable()))
+                .collect(Collectors.toList());
         return unavailableSeats;
     }
 
