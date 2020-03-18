@@ -113,7 +113,8 @@ public class BookingController {
         }
 
         //error handling
-        if (surname.contains("-") && !Character.isUpperCase(surname.charAt(surname.indexOf("-")+1))) {
+        if (surname.contains("-") && (!Character.isUpperCase(surname.charAt(surname.indexOf("-")+1))
+                        && surname.charAt(surname.indexOf("-")+1)!='\0')) {
             model.addAttribute("surnameError", true);
 
             model.addAttribute("movie", movie);
