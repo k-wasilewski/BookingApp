@@ -1,85 +1,30 @@
 package pl.touk.bookingapp.controllers;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import pl.touk.bookingapp.db.entities.Movie;
-import pl.touk.bookingapp.db.entities.Seat;
-import pl.touk.bookingapp.db.repos.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.touk.bookingapp.db.entities.Movie;
+import pl.touk.bookingapp.db.entities.Seat;
+import pl.touk.bookingapp.db.repos.MovieRepository;
 import pl.touk.bookingapp.db.repos.SeatRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
-public class HomeController {
+public class BookingController {
     @Autowired
     MovieRepository movieRepository;
     @Autowired
     SeatRepository seatRepository;
-
-    @GetMapping("/")
-    public String homeMoviesView() {
-        return "index";
-    }
-
-    @PostMapping("/")
-    public String filterMovies(Model model, HttpServletRequest request) {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern( "uuuu-MM-dd" ) ;
-        Date from=null;
-        Date to=null;
-        Time fromH=null;
-        Time toH=null;
-
-        if (request.getParameter("from")!=null && !request.getParameter("from").equals("")) {
-            from=Date.valueOf(request.getParameter("from"));
-            model.addAttribute("from", from);
-        }
-        if (request.getParameter("to")!=null && !request.getParameter("to").equals("")) {
-            to=Date.valueOf(request.getParameter("to"));
-            model.addAttribute("to", to);
-        }
-        if (request.getParameter("fromH")!=null && !request.getParameter("fromH").equals("")) {
-            fromH=Time.valueOf(request.getParameter("fromH")+":00");
-            model.addAttribute("fromH", fromH);
-        }
-        if (request.getParameter("toH")!=null && !request.getParameter("toH").equals("")) {
-            toH=Time.valueOf(request.getParameter("toH")+":00");
-            model.addAttribute("toH", toH);
-        }
-        model.addAttribute("movies", movieRepository.customFindWithinDatesAndTimes(from, to, fromH, toH));
-        model.addAttribute("redir", true);
-
-        return "index";
-    }
-
-    @PostMapping("/details")
-    public String movieDetails(@RequestParam("id") int id, @RequestParam("seatsNo") String seatsNoStr, Model model) {
-        int numberOfSeats=0;
-        if (!seatsNoStr.equals("")) numberOfSeats = Integer.parseInt(seatsNoStr);
-        else {
-            model.addAttribute("numberError", true);
-            return "index";
-        }
-
-        Movie movie = movieRepository.findById(id);
-        model.addAttribute("movie", movie);
-        model.addAttribute("seatsNo", numberOfSeats);
-        List<Seat> availableSeats1 = getAvailableSeats(movie, numberOfSeats).get(0);
-        if (!availableSeats1.isEmpty()) model.addAttribute("availableSeats1", availableSeats1);
-        List<Seat> availableSeats2 = getAvailableSeats(movie, numberOfSeats).get(1);
-        if (!availableSeats2.isEmpty()) model.addAttribute("availableSeats2", availableSeats2);
-
-        return "movieDetails";
-    }
 
     @PostMapping("/book")
     public String bookingView(Model model, @RequestParam("movieId") int movieId, HttpServletRequest request,
@@ -227,89 +172,5 @@ public class HomeController {
             seatsList.add(seat);
         }
         return seatsList;
-    }
-
-    /**
-     * find two sets of available number of seats right before and after already booked seats
-     */
-    private List<List<Seat>> getAvailableSeats(Movie movie, int numberOfSeats) {
-        List<Seat> allAvailableSeats = movie.getAvailableSeats();
-        List<Seat> allUnavailableSeats = movie.getUnvailableSeats();
-        List<List<Seat>> availableSeatsLists = new ArrayList<>();
-        List<Seat> availableSeats1 = new ArrayList<>();
-        List<Seat> availableSeats2 = new ArrayList<>();
-
-        int positionsInRow=1;
-        for (Seat s : seatRepository.findAllByIdNotNull()) {
-            if (s.getPos()>positionsInRow) {
-                positionsInRow=s.getPos();
-            }
-        }
-
-        char highestRow='A';
-        for (Seat s : seatRepository.findAllByIdNotNull()) {
-            if (s.getRow()>highestRow) highestRow=s.getRow();
-        }
-
-        /*
-         * find the list of seats (size=numberOfSeats) right before already booked seats
-         */
-        if (allUnavailableSeats.isEmpty()) {
-            availableSeats1=allAvailableSeats;
-        } else if (allAvailableSeats.size()>=numberOfSeats) {
-            int firstPos = allUnavailableSeats.get(0).getPos();
-            char firstRow = allUnavailableSeats.get(0).getRow();
-            if (firstPos>numberOfSeats) {
-                firstPos-=(numberOfSeats);
-            } else if (firstRow!='A') {
-                firstRow = (char) (firstRow-1);
-                firstPos = seatRepository.findAllByRow(firstRow).get(seatRepository.
-                        findAllByRow(firstRow).size()-1-numberOfSeats).getPos();
-            } else {
-                firstPos=0;
-            }
-
-            if (firstPos!=0) {
-                for (int i=0; i<numberOfSeats; i++) {
-                    char row = firstRow;
-                    int pos = firstPos+i;
-                    Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
-                    if (toAdd!=null) availableSeats1.add(toAdd);
-                }
-            }
-
-            /*
-             * find the list of seats (size=numberOfSeats) right after already booked seats
-             */
-            int lastPos = allUnavailableSeats.get(allUnavailableSeats.size()-1).getPos();
-            char lastRow = allUnavailableSeats.get(allUnavailableSeats.size()-1).getRow();
-
-            //are there free numberOfSeats in this row
-            if (lastPos<seatRepository.findAllByRow(lastRow).get(seatRepository.
-                    findAllByRow(lastRow).size()-numberOfSeats).getPos()) {
-                lastPos+=1;
-            } else if (lastRow!=highestRow) {
-                lastRow += 1;
-                lastPos = 1;
-            } else {
-                lastRow='.';
-            }
-
-            if (lastRow!='.') {
-                for (int i=0; i<numberOfSeats; i++) {
-                    char row = lastRow;
-                    int pos = lastPos+i;
-                    Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
-                    if (toAdd!=null) availableSeats2.add(toAdd);
-                }
-            }
-
-            if (availableSeats1.size()<numberOfSeats) availableSeats1.clear();
-            if (availableSeats2.size()<numberOfSeats) availableSeats2.clear();
-        }
-        availableSeatsLists.add(availableSeats1);
-        availableSeatsLists.add(availableSeats2);
-
-        return availableSeatsLists;
     }
 }
