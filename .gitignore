@@ -5,3 +5,5 @@
 HELP.md
 mvnw
 *.cmd
+/target
+*.log
