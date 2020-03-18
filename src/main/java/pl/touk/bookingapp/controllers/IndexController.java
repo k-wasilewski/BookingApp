@@ -1,6 +1,7 @@
 package pl.touk.bookingapp.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.touk.bookingapp.db.repos.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,27 +26,29 @@ public class IndexController {
     }
 
     @PostMapping("/")
-    public String filterMovies(Model model, HttpServletRequest request) {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern( "uuuu-MM-dd" ) ;
-        Date from=null;
-        Date to=null;
+    public String filterMovies(Model model, @RequestParam(name = "from", required = false) Date from,
+                               @RequestParam(name = "to", required = false) Date to,
+                               @RequestParam(name = "fromH", required = false) String fromHstr,
+                               @RequestParam(name = "toH", required = false) String toHstr) {
         Time fromH=null;
+        if (fromHstr!=null && !fromHstr.equals("")) {
+            fromH = Time.valueOf(fromHstr+":00");
+        }
         Time toH=null;
+        if (fromHstr!=null && !toHstr.equals("")) {
+            toH = Time.valueOf(toHstr+":00");
+        }
 
-        if (request.getParameter("from")!=null && !request.getParameter("from").equals("")) {
-            from=Date.valueOf(request.getParameter("from"));
+        if (from!=null && !from.equals("")) {
             model.addAttribute("from", from);
         }
-        if (request.getParameter("to")!=null && !request.getParameter("to").equals("")) {
-            to=Date.valueOf(request.getParameter("to"));
+        if (to!=null && !to.equals("")) {
             model.addAttribute("to", to);
         }
-        if (request.getParameter("fromH")!=null && !request.getParameter("fromH").equals("")) {
-            fromH=Time.valueOf(request.getParameter("fromH")+":00");
+        if (fromH!=null && !fromH.equals("")) {
             model.addAttribute("fromH", fromH);
         }
-        if (request.getParameter("toH")!=null && !request.getParameter("toH").equals("")) {
-            toH=Time.valueOf(request.getParameter("toH")+":00");
+        if (toH!=null && !toH.equals("")) {
             model.addAttribute("toH", toH);
         }
         model.addAttribute("movies", movieRepository.customFindWithinDatesAndTimes(from, to, fromH, toH));

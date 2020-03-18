@@ -28,9 +28,12 @@ public class BookingController {
 
     @PostMapping("/book")
     public String bookingView(Model model, @RequestParam("movieId") int movieId, HttpServletRequest request,
-                              @RequestParam("seatsNo") int seatsNo) {
-        List<Seat> availableSeats1 = convertSeatsStringToList(request.getParameter("availableSeats1"), movieId);
-        List<Seat> availableSeats2 = convertSeatsStringToList(request.getParameter("availableSeats2"), movieId);
+                              @RequestParam("seatsNo") int seatsNo,
+                              @RequestParam("availableSeats1") String availableSeats1str,
+                              @RequestParam("availableSeats2") String availableSeats2str,
+                              @RequestParam("availableSeats") String availableSeatsStr) {
+        List<Seat> availableSeats1 = convertSeatsStringToList(availableSeats1str, movieId);
+        List<Seat> availableSeats2 = convertSeatsStringToList(availableSeats2str, movieId);
         int list = 0;
         boolean listsError=false;
 
@@ -41,13 +44,19 @@ public class BookingController {
         for (Seat s : seatRepository.findAllByMovie(movieRepository.findById(movieId))) {
             String no = s.getNo();
             boolean checked=false;
+
             if (request.getParameter(s.getNo())!=null &&
                     request.getParameter(s.getNo()).equals("checked")) {
                 seats.add(s);
-            };
-            if (availableSeats1.contains(s) && (list==0||list==1)) list = 1;
-            else if (availableSeats2.contains(s) && (list==0||list==2)) list = 2;
-            else listsError=true;
+
+                if (availableSeats1.contains(s) && (list==0||list==1)) {
+                    list = 1;
+                } else if (availableSeats2.contains(s) && (list==0||list==2)) {
+                    list = 2;
+                } else if (availableSeats1.contains(s) || availableSeats2.contains(s)) {
+                    listsError=true;
+                }
+            }
         }
 
         //error handling
@@ -67,7 +76,7 @@ public class BookingController {
             Movie movie = movieRepository.findById(movieId);
             model.addAttribute("movie", movie);
             model.addAttribute("availableSeats", convertSeatsStringToList(
-                    request.getParameter("availableSeats"), movieId));
+                    availableSeatsStr, movieId));
             model.addAttribute("noChecked", true);
             model.addAttribute("seatsNo", seatsNo);
 
