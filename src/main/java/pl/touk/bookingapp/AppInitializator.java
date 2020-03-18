@@ -42,6 +42,33 @@ class AppInitializator {
 
     @PostConstruct
     private void init() {
+        Movie mock = new Movie();
+        mock.setName("mock");
+        movieRepository.save(mock);
+
+        for (int i=1; i<4; i++) {
+            Seat s = new Seat();
+            s.setRow('A');
+            s.setPos(i);
+            s.setNo("A"+i);
+            s.setMovie(mock);
+            seatRepository.save(s);
+        }
+        for (int i=1; i<4; i++) {
+            Seat s = new Seat();
+            s.setRow('B');
+            s.setPos(i);
+            s.setNo("B"+i);
+            s.setMovie(mock);
+            seatRepository.save(s);
+        }
+
+        for (int i = 1; i < 4; i++) {
+            Room r = new Room();
+            r.setName("sala"+i);
+            roomRepository.save(r);
+        }
+
         List<Seat> seats1 = seatRepository.findAll();
         Room s1 = roomRepository.getById(1);
 
