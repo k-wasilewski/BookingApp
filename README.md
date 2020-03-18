@@ -1,4 +1,4 @@
-# 'BookingApp': a SpringBoot REST app
+# 'BookingApp': a SpringBoot app
 
 A web application for booking seats at multiplex, including client.
 
