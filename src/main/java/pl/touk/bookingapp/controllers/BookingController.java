@@ -9,7 +9,6 @@ import pl.touk.bookingapp.db.entities.Movie;
 import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
 import pl.touk.bookingapp.db.repos.SeatRepository;
-
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;

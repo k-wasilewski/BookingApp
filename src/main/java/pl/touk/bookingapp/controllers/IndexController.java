@@ -8,10 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import pl.touk.bookingapp.db.repos.SeatRepository;
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;
-import java.time.format.DateTimeFormatter;
 
 @Controller
 public class IndexController {

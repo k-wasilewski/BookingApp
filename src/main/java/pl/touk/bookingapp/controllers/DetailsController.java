@@ -22,8 +22,9 @@ public class DetailsController {
     @PostMapping("/details")
     public String movieDetails(@RequestParam("id") int id, @RequestParam("seatsNo") String seatsNoStr, Model model) {
         int numberOfSeats=0;
-        if (!seatsNoStr.equals("")) numberOfSeats = Integer.parseInt(seatsNoStr);
-        else {
+        if (!seatsNoStr.equals("")) {
+            numberOfSeats = Integer.parseInt(seatsNoStr);
+        } else {
             model.addAttribute("numberError", true);
             return "index";
         }
@@ -32,9 +33,13 @@ public class DetailsController {
         model.addAttribute("movie", movie);
         model.addAttribute("seatsNo", numberOfSeats);
         List<Seat> availableSeats1 = getAvailableSeats(movie, numberOfSeats).get(0);
-        if (!availableSeats1.isEmpty()) model.addAttribute("availableSeats1", availableSeats1);
+        if (!availableSeats1.isEmpty()) {
+            model.addAttribute("availableSeats1", availableSeats1);
+        }
         List<Seat> availableSeats2 = getAvailableSeats(movie, numberOfSeats).get(1);
-        if (!availableSeats2.isEmpty()) model.addAttribute("availableSeats2", availableSeats2);
+        if (!availableSeats2.isEmpty()) {
+            model.addAttribute("availableSeats2", availableSeats2);
+        }
 
         return "movieDetails";
     }
@@ -110,12 +115,18 @@ public class DetailsController {
                     char row = lastRow;
                     int pos = lastPos+i;
                     Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
-                    if (toAdd!=null) availableSeats2.add(toAdd);
+                    if (toAdd!=null) {
+                        availableSeats2.add(toAdd);
+                    }
                 }
             }
 
-            if (availableSeats1.size()<numberOfSeats) availableSeats1.clear();
-            if (availableSeats2.size()<numberOfSeats) availableSeats2.clear();
+            if (availableSeats1.size()<numberOfSeats) {
+                availableSeats1.clear();
+            }
+            if (availableSeats2.size()<numberOfSeats) {
+                availableSeats2.clear();
+            }
         }
         availableSeatsLists.add(availableSeats1);
         availableSeatsLists.add(availableSeats2);
