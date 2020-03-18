@@ -1,10 +1,6 @@
 package pl.touk.bookingapp.db.entities;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name="rooms")

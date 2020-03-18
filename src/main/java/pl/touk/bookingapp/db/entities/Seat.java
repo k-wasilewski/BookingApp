@@ -1,7 +1,6 @@
 package pl.touk.bookingapp.db.entities;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name="seats")
@@ -13,7 +12,7 @@ public class Seat {
     private String name;
     private String surname;
     @ManyToOne
-    private Movie movie;
+    private Screening screening;
     @Column(name = "available", nullable = false, columnDefinition = "boolean default true")
     private boolean available;
     private char row;
@@ -47,12 +46,12 @@ public class Seat {
         return name;
     }
 
-    public Movie getMovie() {
-        return movie;
+    public Screening getScreening() {
+        return screening;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
+    public void setScreening(Screening screening) {
+        this.screening = screening;
     }
 
     public void setName(String name) {

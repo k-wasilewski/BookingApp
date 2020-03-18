@@ -5,9 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.touk.bookingapp.db.entities.Movie;
+import pl.touk.bookingapp.db.entities.Screening;
 import pl.touk.bookingapp.db.entities.Seat;
 import pl.touk.bookingapp.db.repos.MovieRepository;
+import pl.touk.bookingapp.db.repos.ScreeningRepository;
 import pl.touk.bookingapp.db.repos.SeatRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ public class DetailsController {
     MovieRepository movieRepository;
     @Autowired
     SeatRepository seatRepository;
+    @Autowired
+    ScreeningRepository screeningRepository;
 
     @PostMapping("/details")
     public String movieDetails(@RequestParam("id") int id, @RequestParam("seatsNo") String seatsNoStr, Model model) {
@@ -29,27 +32,27 @@ public class DetailsController {
             return "index";
         }
 
-        Movie movie = movieRepository.findById(id);
-        model.addAttribute("movie", movie);
+        Screening screening = screeningRepository.findById(id);
+        model.addAttribute("screening", screening);
         model.addAttribute("seatsNo", numberOfSeats);
-        List<Seat> availableSeats1 = getAvailableSeats(movie, numberOfSeats).get(0);
+        List<Seat> availableSeats1 = getAvailableSeats(screening, numberOfSeats).get(0);
         if (!availableSeats1.isEmpty()) {
             model.addAttribute("availableSeats1", availableSeats1);
         }
-        List<Seat> availableSeats2 = getAvailableSeats(movie, numberOfSeats).get(1);
+        List<Seat> availableSeats2 = getAvailableSeats(screening, numberOfSeats).get(1);
         if (!availableSeats2.isEmpty()) {
             model.addAttribute("availableSeats2", availableSeats2);
         }
 
-        return "movieDetails";
+        return "details";
     }
 
     /**
      * find two sets of available number of seats right before and after already booked seats
      */
-    private List<List<Seat>> getAvailableSeats(Movie movie, int numberOfSeats) {
-        List<Seat> allAvailableSeats = movie.getAvailableSeats();
-        List<Seat> allUnavailableSeats = movie.getUnvailableSeats();
+    private List<List<Seat>> getAvailableSeats(Screening screening, int numberOfSeats) {
+        List<Seat> allAvailableSeats = screening.getAvailableSeats();
+        List<Seat> allUnavailableSeats = screening.getUnvailableSeats();
         List<List<Seat>> availableSeatsLists = new ArrayList<>();
         List<Seat> availableSeats1 = new ArrayList<>();
         List<Seat> availableSeats2 = new ArrayList<>();
@@ -88,7 +91,7 @@ public class DetailsController {
                 for (int i=0; i<numberOfSeats; i++) {
                     char row = firstRow;
                     int pos = firstPos+i;
-                    Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
+                    Seat toAdd = seatRepository.findByScreeningAndRowAndPos(screening, row, pos);
                     if (toAdd!=null) availableSeats1.add(toAdd);
                 }
             }
@@ -114,7 +117,7 @@ public class DetailsController {
                 for (int i=0; i<numberOfSeats; i++) {
                     char row = lastRow;
                     int pos = lastPos+i;
-                    Seat toAdd = seatRepository.findByMovieAndRowAndPos(movie, row, pos);
+                    Seat toAdd = seatRepository.findByScreeningAndRowAndPos(screening, row, pos);
                     if (toAdd!=null) {
                         availableSeats2.add(toAdd);
                     }

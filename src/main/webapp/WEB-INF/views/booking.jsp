@@ -16,7 +16,7 @@
     <form action="/doBook" method="post">
         ${seats}
         <input hidden value="${seats}" name="seats">
-        <input hidden value="${movie.id}" name="movieId">
+        <input hidden value="${screening.id}" name="screeningId">
         Imię: <input type="text" name="name">
         Nazwisko: <input type="text" name="surname">
         <select name="age">

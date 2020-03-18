@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import pl.touk.bookingapp.db.repos.ScreeningRepository;
 import pl.touk.bookingapp.db.repos.SeatRepository;
 import java.sql.Date;
 import java.sql.Time;
@@ -17,6 +18,8 @@ public class IndexController {
     MovieRepository movieRepository;
     @Autowired
     SeatRepository seatRepository;
+    @Autowired
+    ScreeningRepository screeningRepository;
 
     @GetMapping("/")
     public String homeMoviesView() {
@@ -49,7 +52,7 @@ public class IndexController {
         if (toH!=null && !toH.equals("")) {
             model.addAttribute("toH", toH);
         }
-        model.addAttribute("movies", movieRepository.customFindWithinDatesAndTimes(from, to, fromH, toH));
+        model.addAttribute("screenings", screeningRepository.customFindWithinDatesAndTimes(from, to, fromH, toH));
         model.addAttribute("redir", true);
 
         return "index";

@@ -51,10 +51,10 @@
     <c:if test="${not empty redir and (empty fromH or empty toH)}">
         <span style="color: red">Należy podać przedział godzin</span><br>
     </c:if>
-    <c:forEach items="${movies}" var="movie">
-        ${movie}
+    <c:forEach items="${screenings}" var="screening">
+        ${screening}
         <form action="/details" method="post">
-            <input hidden name="id" value="${movie.id}">
+            <input hidden name="id" value="${screening.id}">
             Liczba miejsc: <input type="number" name="seatsNo">
             <button type="submit">Przejdź do rezerwacji</button>
         </form>

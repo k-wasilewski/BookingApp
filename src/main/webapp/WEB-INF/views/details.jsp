@@ -6,8 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-    <h2>${movie}</h2>
-    sala: ${movie.room}, wolne miejsca:<br>
+    <h2>${screening}</h2>
     <c:if test="${noChecked==true}">
         <span style="color: red">Liczba wybranych miejsc nie zgadza się z podaną liczbą</span>
     </c:if>
@@ -16,7 +15,7 @@
     </c:if>
     <form action="/book" method="post">
         <input hidden name="seatsNo" value="${seatsNo}">
-        <input hidden name="movieId" value="${movie.id}">
+        <input hidden name="screeningId" value="${screening.id}">
         <input hidden name="availableSeats1" value="${availableSeats1}">
         <input hidden name="availableSeats2" value="${availableSeats2}">
         <c:forEach items="${availableSeats1}" var="seat">
