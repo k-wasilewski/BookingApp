@@ -42,7 +42,7 @@ class AppInitializator {
 
     @PostConstruct
     private void init() {
-        List<Seat> seats1 = seatRepository.findAllByIdNotNull();
+        List<Seat> seats1 = seatRepository.findAll();
         Room s1 = roomRepository.getById(1);
 
         List<Seat> seats2 = seatRepository.findByIdGreaterThan(3);

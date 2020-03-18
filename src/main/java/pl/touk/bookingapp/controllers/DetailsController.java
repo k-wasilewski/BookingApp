@@ -50,14 +50,14 @@ public class DetailsController {
         List<Seat> availableSeats2 = new ArrayList<>();
 
         int positionsInRow=1;
-        for (Seat s : seatRepository.findAllByIdNotNull()) {
+        for (Seat s : seatRepository.findAll()) {
             if (s.getPos()>positionsInRow) {
                 positionsInRow=s.getPos();
             }
         }
 
         char highestRow='A';
-        for (Seat s : seatRepository.findAllByIdNotNull()) {
+        for (Seat s : seatRepository.findAll()) {
             if (s.getRow()>highestRow) highestRow=s.getRow();
         }
 
